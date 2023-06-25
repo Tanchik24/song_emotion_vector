@@ -1,0 +1,36 @@
+[
+  {
+    "artwork": "https://...",
+    "title": "In the name of love",
+    "artist":  "Martin Garrix",
+    "filename": "Martin Garrix - In the name of love.mp3"
+  },
+  {
+    "artwork": "https://...",
+    "title": "Track 2",
+    "artist": "Martin Garrix",
+    "filename": "Martin Garrix - In the name of love.mp3"
+  }
+]
+
+- songs -> random 15 ->
+: filename, title, artist, random_artwork
+- artworks -> random 1 -> random_artwork
+
+
+route GET /randomSongs
+
+[
+{
+"artwork": "https://...",
+"title": "In the name of love",
+"artist":  "Martin Garrix",
+"filename": "Martin Garrix - In the name of love.mp3"
+},
+{
+"artwork": "https://...",
+"title": "Track 2",
+"artist": "Martin Garrix",
+"filename": "Martin Garrix - In the name of love.mp3"
+}
+]
