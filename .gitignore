@@ -24,3 +24,7 @@ client/*.sln
 client/*.sw?
 *.csv
 venv
+songs_features.csv
+songs.csv
+__pycache__
+*.DS_Store
