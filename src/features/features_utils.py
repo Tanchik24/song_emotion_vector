@@ -1,37 +1,69 @@
 import numpy as np
+import os
+import shutil
 import librosa
 import torch
 
-def cut_music(music:np.ndarray, sr:int):
-    music_length = music.shape[0] // sr
-    frame_duration = 1
-    frame_length = int(frame_duration * sr)
-    music = librosa.util.frame(music, frame_length=frame_length, hop_length=frame_length, axis=0)
-    return music 
 
+def create_folder(folder_path):
+    """
+      Create a new folder at the specified path.
 
-def normalize_mfccs(mfcc):
-    mean = torch.tensor(13.6779, dtype=torch.float)
-    std = torch.tensor(53.4601, dtype=torch.float)
-    return (mfcc - mean) / std
+      If a folder already exists at the given path, it will be deleted first and then recreated.
+
+      Args:
+          folder_path (str): The path of the folder to create.
+
+      Returns:
+          None
+      """
+    if os.path.exists(folder_path):
+        shutil.rmtree(folder_path)
+        os.mkdir(folder_path)
+    else:
+        os.mkdir(folder_path)
 
 
 def get_mfcc(music, sr):
-  """
-    Calculate the Mel-frequency cepstral coefficients (MFCC) of an audio signal.
+    """
+      Calculate the Mel-frequency cepstral coefficients (MFCC) of an audio signal.
+
+      Args:
+          music (ndarray): Audio signal.
+          sr (int): Sampling rate of the audio signal.
+
+      Returns:
+          ndarray: MFCC of the audio signal.
+      """
+    sr = sr / 1000
+    n_fft = int(30 * sr)
+    hop_length = int(10 * sr)
+    mfcc = librosa.feature.mfcc(y=music, sr=sr, n_mfcc=20, n_fft=n_fft, hop_length=hop_length)
+    return mfcc
+
+
+def get_quadrants(arousal, valence):
+    """
+    Determine the quadrant based on arousal and valence values.
 
     Args:
-        music (ndarray): Audio signal.
-        sr (int): Sampling rate of the audio signal.
+        arousal (float): Arousal value.
+        valence (float): Valence value.
 
     Returns:
-        ndarray: MFCC of the audio signal.
+        int: The quadrant number (1, 2, 3, or 4).
     """
-  sr = sr / 1000
-  n_fft = int(30 * sr)
-  hop_length = int(10 * sr)
-  mfcc = librosa.feature.mfcc(y=music, sr=sr, n_mfcc=20, n_fft= n_fft, hop_length=hop_length)
-  return mfcc
+    mid_val = 0.5
+    if valence > mid_val:
+        return 4 if arousal < mid_val else 1
+    else:
+        return 3 if arousal < mid_val else 2
+
+
+def normalize_mfccs(mfcc):
+    mean = torch.tensor(13.6826, dtype=torch.float)
+    std = torch.tensor(53.5789, dtype=torch.float)
+    return (mfcc - mean) / std
 
 
 def make_mono_sound(song):
@@ -46,3 +78,10 @@ def preprocess_song(song, sr):
     mfcc = normalize_mfccs(mfcc)
     mfcc = torch.unsqueeze(mfcc, 0)
     return mfcc
+
+
+def cut_music(music, sr):
+    frame_duration = 1
+    frame_length = int(frame_duration * sr)
+    music = librosa.util.frame(music, frame_length=frame_length, hop_length=frame_length, axis=0)
+    return music

@@ -3,14 +3,14 @@ from starlette.staticfiles import StaticFiles
 from src.models.predict_model import Predictor
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
-from app.app_utils import get_mean, get_std, get_qc
+from client.app.app_utils import get_mean, get_std, get_qc
 import pandas as pd
 from io import BytesIO
 import os
 from dataclasses import dataclass
 import random
-from recomendation.song_recomendation import get_recommendation
-from app.gpt import get_description
+from client.recomendation.song_recomendation import get_recommendation
+from client.app.gpt import get_description
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -84,7 +84,7 @@ async def get_library():
     tracks = list(df['id'].values)
     random_tracks = random.sample(tracks, 10)
     tracks_df = df[df['id'].isin(random_tracks)]
-    artworks = os.listdir('public/artworks')
+    artworks = os.listdir('client/public/artworks')
     random_artworks = random.sample(artworks, 10)
     tracks = [{'id': tracks_df.iloc[index]['id'], 'artist': tracks_df.iloc[index]['artist_name'],
                'title': tracks_df.iloc[index]['track_name'],

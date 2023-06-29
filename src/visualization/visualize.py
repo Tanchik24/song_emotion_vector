@@ -1,22 +1,30 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 import torch
 import numpy as np
 import pandas as pd
+import json
+from models.model import EmotionModel
+from src.models.model_utils import get_tarin_valid_data
 
 
 class Visualizer():
-    def __init__(self, model_arousal, model_valence, valid_dataset):
-        self.device = device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.model_arousal = model_arousal.to(self.device)
-        self.model_arousal.eval()
-        self.model_valence = model_valence.to(self.device)
-        self.model_valence.eval()
+    def __init__(self):
+        self.model_arousal = EmotionModel()
+        self.model_valence = EmotionModel()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.valid_data = valid_dataset
-        self.arousal_history_dir = '/content/gdrive/MyDrive/CNN_one_model/arousal_history3.csv'
-        self.arousal_best_res_dir = '/content/gdrive/MyDrive/CNN_one_model/arousal_best_res3.json'
-        self.valence_history_dir = '/content/gdrive/MyDrive/CNN_one_model/valence_history3.csv'
-        self.valence_best_res_dir = '/content/gdrive/MyDrive/CNN_one_model/valence_best_res3.json'
+        self.model_arousal.load_state_dict(
+            torch.load('../models/train_weights/arousal/best_model.pt', map_location=self.device))
+        self.model_valence.load_state_dict(
+            torch.load('../models/train_weights/valence/best_model.pt', map_location=self.device))
+        _, self.valid_data = get_tarin_valid_data()
+        self.model_arousal, self.model_valence = self.model_arousal.to(self.device), self.model_valence.to(self.device)
+        self.model_arousal.eval()
+        self.model_valence.eval()
+        self.arousal_history_dir = '../models/train_weights/arousal/history.csv'
+        self.arousal_best_res_dir = '../models/train_weights/arousal/best_res.json'
+        self.valence_history_dir = '../models/train_weights/valence/history.csv'
+        self.valence_best_res_dir = '../models/train_weights/valence/best_res.json'
         sns.set_style('whitegrid')
         sns.set_palette('husl')
 
@@ -173,5 +181,5 @@ class Visualizer():
         valence_df = pd.concat([valence_metrics_df,valence_range_df], axis=1)
         df = pd.concat([arousal_df, valence_df])
         quadrant_df = self.get_quadrants_res()
-        display(df)
-        display(quadrant_df)
+        print(df)
+        print(quadrant_df)
