@@ -9,6 +9,22 @@ from src.models.model_utils import get_tarin_valid_data, make_history_file, prin
 
 
 class Trainer():
+    """
+       Trainer class for training an emotion model.
+
+       Attributes:
+           model (EmotionModel): Emotion model.
+           device (str): Device for running the model (e.g., 'cuda' or 'cpu').
+           target (str): Target emotion for training ('arousal' or 'valence').
+           directory (str): Directory path for saving weights and history.
+           history (dict): Dictionary for storing training history.
+           best_metrics (dict): Dictionary for storing the best metrics achieved during training.
+           train_data (DataLoader): DataLoader for training data.
+           valid_data (DataLoader): DataLoader for validation data.
+           epoch_counter (int): Counter for tracking the current epoch.
+           criterion (loss): Loss function for training.
+           metric (loss): Metric function for evaluation. """
+
     def __init__(self, target='arousal'):
         self.model = EmotionModel()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -24,6 +40,15 @@ class Trainer():
         make_history_file(self.directory)
 
     def __save_weighst(self, epoch):
+        """
+                Saves model weights at specific epochs.
+
+                Args:
+                    epoch (int): Current epoch number.
+
+                Returns:
+                    None
+                """
         torch.save(self.model.state_dict(), f'{self.directory}/each_epochs.pt')
         if epoch == 100:
             torch.save(self.model.state_dict(), f'{self.directory}/100_epochs.pt')
@@ -31,6 +56,15 @@ class Trainer():
             torch.save(self.model.state_dict(), f'{self.directory}/200_epochs.pt')
 
     def __add_best_results(self, epoch):
+        """
+                Records the best metrics achieved during training.
+
+                Args:
+                    epoch (int): Current epoch number.
+
+                Returns:
+                    None
+                """
         self.best_metrics['epoch'] = epoch
         self.best_metrics['valid_loss'] = self.history["valid_losses"][-1]
         self.best_metrics['valid_metric'] = self.history["valid_metrics"][-1]
@@ -41,6 +75,15 @@ class Trainer():
             f"best results: epoch {self.best_metrics['epoch']}, valid loss {self.best_metrics['valid_loss']}, valid metric {self.best_metrics['valid_metric']}")
 
     def __add_to_csv_file(self, epoch):
+        """
+                Appends training history to a CSV file.
+
+                Args:
+                    epoch (int): Current epoch number.
+
+                Returns:
+                    None
+                """
         with open(f'{self.directory}/history.csv', 'a') as file:
             writer = csv.writer(file)
             writer.writerows([[epoch, round(self.history["train_losses"][-1], 4),
@@ -49,10 +92,25 @@ class Trainer():
                                round(self.history["valid_metrics"][-1], 4)]])
 
     def __get_directory(self):
-        directory = '../models/train_weights/arousal' if self.target == 'arousal' else '../models/train_weights/valence'
+        """
+                Returns the directory path for saving weights and history.
+
+                Returns:
+                    str: Directory path.
+                """
+        directory = 'models/weights/arousal' if self.target == 'arousal' else 'models/weights/valence'
         return directory
 
     def __tarin_template(self, optimizer=None):
+        """
+                Template for training and validation iterations.
+
+                Args:
+                    optimizer (Optimizer): Optimizer for model parameters (default: None).
+
+                Returns:
+                    tuple: A tuple containing the average losses and metrics.
+                """
 
         losses_iter = []
         metrics_iter = []
@@ -80,12 +138,22 @@ class Trainer():
         return np.mean(losses_iter), np.mean(metrics_iter)
 
     def train(self, epochs, keep=False):
+        """
+                Trains the emotion model for the specified number of epochs.
+
+                Args:
+                    epochs (int): Number of epochs to train.
+                    keep (bool): Whether to continue training from the last saved weights (default: False).
+
+                Returns:
+                    None
+                """
 
         if keep is True:
             try:
                 self.model.load_state_dict(torch.load(f'{self.directory}/each_epoch', map_location=self.device))
             except FileNotFoundError:
-                print(f'Файлов с весами не обнаружено')
+                print(f'Weight file not found')
                 return
 
         optimizer = optim.Adam(self.model.parameters(), lr=0.0001, weight_decay=0.01)
@@ -110,4 +178,4 @@ class Trainer():
                 self.__add_best_results(epoch)
             self.__save_weighst(epoch)
             print_results(epoch, self.history)
-        print(f'Обучение закончено')
+        print(f'traning completed')

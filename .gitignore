@@ -1,27 +1,27 @@
-client/.DS_Store
-client/node_modules
-client/dist
+api/.DS_Store
+api/node_modules
+api/dist
 *.pt
 
 
 # local env files
-client/.env.local
-client/.env.*.local
+api/.env.local
+api/.env.*.local
 
 # Log files
-client/npm-debug.log*
-client/yarn-debug.log*
-client/yarn-error.log*
-client/pnpm-debug.log*
+api/npm-debug.log*
+api/yarn-debug.log*
+api/yarn-error.log*
+api/pnpm-debug.log*
 
 # Editor directories and files
-client/.idea
-client/.vscode
-client/*.suo
-client/*.ntvs*
-client/*.njsproj
-client/*.sln
-client/*.sw?
+api/.idea
+api/.vscode
+api/*.suo
+api/*.ntvs*
+api/*.njsproj
+api/*.sln
+api/*.sw?
 *.csv
 venv
 songs_features.csv

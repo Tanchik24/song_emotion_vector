@@ -61,18 +61,46 @@ def get_quadrants(arousal, valence):
 
 
 def normalize_mfccs(mfcc):
+    """
+        Normalizes the MFCCs.
+
+        Args:
+            mfcc (torch.Tensor): MFCC tensor.
+
+        Returns:
+            torch.Tensor: Normalized MFCC tensor.
+        """
     mean = torch.tensor(13.6826, dtype=torch.float)
     std = torch.tensor(53.5789, dtype=torch.float)
     return (mfcc - mean) / std
 
 
 def make_mono_sound(song):
+    """
+        Converts a stereo sound to mono.
+
+        Args:
+            song (np.ndarray): Input audio waveform.
+
+        Returns:
+            song (np.ndarray): Mono audio waveform.
+        """
     if song.shape[1] > 1:
         song = librosa.to_mono(song.T)
     return song
 
 
 def preprocess_song(song, sr):
+    """
+        Preprocesses a song by calculating MFCC and normalizing it.
+
+        Args:
+            song (np.ndarray): Input audio waveform.
+            sr (int): Sampling rate of the audio.
+
+        Returns:
+            torch.Tensor: Preprocessed MFCC tensor.
+        """
     mfcc = get_mfcc(song, sr)
     mfcc = torch.tensor(mfcc, dtype=torch.float)
     mfcc = normalize_mfccs(mfcc)
@@ -81,6 +109,16 @@ def preprocess_song(song, sr):
 
 
 def cut_music(music, sr):
+    """
+        Cuts the music into frames of a specified duration (1 sec).
+
+        Args:
+            music (np.ndarray): Input audio waveform.
+            sr (int): Sampling rate of the audio.
+
+        Returns:
+            list: Music frames.
+        """
     frame_duration = 1
     frame_length = int(frame_duration * sr)
     music = librosa.util.frame(music, frame_length=frame_length, hop_length=frame_length, axis=0)

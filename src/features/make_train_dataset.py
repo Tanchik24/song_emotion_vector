@@ -19,14 +19,14 @@ def make_mfcc_dataset(music_dir, annot_dir):
       Returns:
           None
       """
-    create_folder('../data/processed/mfcc')
+    create_folder('data/processed/mfcc')
     annot_df = pd.read_csv(annot_dir)
     for song in list(annot_df['song_id'].values):
         music, sr = librosa.load(os.path.join(music_dir, song + '.wav'), sr=None, mono=True)
         mfcc = get_mfcc(music, sr)
         if mfcc is None:
             continue
-        np.save(f'../data/processed/mfcc/{song}.npy', mfcc)
+        np.save(f'data/processed/mfcc/{song}.npy', mfcc)
 
 
 class DataPreprocessor():
@@ -75,7 +75,7 @@ class DataPreprocessor():
         Returns:
         None
         """
-        self.__df.to_csv('../data/processed/annotation.csv', index=False)
+        self.__df.to_csv('data/processed/annotation.csv', index=False)
 
     def __make_new_dataset(self):
         """

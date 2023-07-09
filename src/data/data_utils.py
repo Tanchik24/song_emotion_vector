@@ -58,6 +58,9 @@ def cut_music(song_dir):
         """
     music, sr = sf.read(song_dir)
     music = make_mono_sound(music)
+    if sr != 44100:
+        music = librosa.resample(music, orig_sr=sr, target_sr=44100)
+    sr = 44100
     start_time = librosa.time_to_samples(15, sr=sr)
     music = music[start_time:]
     music_length = music.shape[0] // sr
@@ -69,7 +72,7 @@ def cut_music(song_dir):
     return music, sr
 
 
-def download_data_from_google_drive(url):
+def download_folder_from_google_drive(url):
     """
             Download datasets from google drive
 
@@ -82,36 +85,15 @@ def download_data_from_google_drive(url):
     gdown.download_folder(url, quiet=True, use_cookies=False, remaining_ok=True)
 
 
-def merge_datasets():
+def download_file_from_doodle_drive(url, output_path):
     """
-        Merge music files and annotations into a single folder and file.
-
-        The function renames the music files in the DEAM and PMEmo folders by adding a suffix to the filename,
-        and then moves them to the 'all_music' folder. It also merges the annotations from DEAM and PMEmo into a
-        single annotation file and saves it.
+        Downloads a file from Doodle Drive using the provided URL.
 
         Args:
-            None
+            url (str): URL of the file to download from Doodle Drive.
+            output_path (str): Path to save the downloaded file.
 
         Returns:
             None
         """
-    # Merge music files into a single folser
-    for song in os.listdir('../data/interim/deam/music'):
-        os.rename(f'../data/interim/deam/music/{song}', f"../data/interim/deam/music/{song.split('.')[0]}_deam.wav")
-    for song in os.listdir('../data/interim/PMEmo/music'):
-        os.rename(f'../data/interim/PMEmo/music/{song}', f"../data/interim/PMEmo/music/{song.split('.')[0]}_pmemo.wav")
-    for song in os.listdir('../data/interim/deam/music'):
-        shutil.move(f'../data/interim/deam/music/{song}', '../data/interim/all_music')
-    for song in os.listdir('../data/interim/PMEmo/music'):
-        shutil.move(f'../data/interim/PMEmo/music/{song}', '../data/interim/all_music')
-
-    # Merge annotation
-    annotation_deam = pd.read_csv('../data/interim/deam/annotation.csv')
-    annotation_pmemo = pd.read_csv('../data/interim/PMEmo/annotation.csv')
-    annotation_deam['arousal'] = annotation_deam['arousal'].apply(lambda x: (((x + 1) * (1 - 0)) / (1 + 1)) + 0)
-    annotation_deam['valence'] = annotation_deam['valence'].apply(lambda x: (((x + 1) * (1 - 0)) / (1 + 1)) + 0)
-    annotation_deam['song_id'] = annotation_deam['song_id'].apply(lambda x: x + '_deam')
-    annotation_pmemo['song_id'] = annotation_pmemo['song_id'].apply(lambda x: x + '_pmemo')
-    annotation = pd.concat([annotation_deam, annotation_pmemo])
-    annotation.reset_index(drop=True).to_csv('../data/interim/annotation.csv', index=False)
+    gdown.download(url, output_path, quiet=False, fuzzy=True)

@@ -14,17 +14,17 @@ class Visualizer():
         self.model_valence = EmotionModel()
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model_arousal.load_state_dict(
-            torch.load('../models/train_weights/arousal/best_model.pt', map_location=self.device))
+            torch.load('models/weights/arousal/best_model.pt', map_location=self.device))
         self.model_valence.load_state_dict(
-            torch.load('../models/train_weights/valence/best_model.pt', map_location=self.device))
+            torch.load('models/weights/valence/best_model.pt', map_location=self.device))
         _, self.valid_data = get_tarin_valid_data()
         self.model_arousal, self.model_valence = self.model_arousal.to(self.device), self.model_valence.to(self.device)
         self.model_arousal.eval()
         self.model_valence.eval()
-        self.arousal_history_dir = '../models/train_weights/arousal/history.csv'
-        self.arousal_best_res_dir = '../models/train_weights/arousal/best_res.json'
-        self.valence_history_dir = '../models/train_weights/valence/history.csv'
-        self.valence_best_res_dir = '../models/train_weights/valence/best_res.json'
+        self.arousal_history_dir = 'models/weights/arousal/history.csv'
+        self.arousal_best_res_dir = 'models/weights/arousal/best_res.json'
+        self.valence_history_dir = 'models/weights/valence/history.csv'
+        self.valence_best_res_dir = 'models/weights/valence/best_res.json'
         sns.set_style('whitegrid')
         sns.set_palette('husl')
 

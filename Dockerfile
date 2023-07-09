@@ -1,12 +1,6 @@
-FROM python:3.9
-
+FROM python:3.10
 WORKDIR /app
-
-# Копирование исходного кода проекта
+COPY requirements.txt .
+RUN pip install -r requirements.txt --default-timeout=900
 COPY . .
-
-# Установка зависимостей
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Указание команды для запуска сервера приложения
 CMD ["python3", "main.py"]

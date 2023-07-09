@@ -5,7 +5,17 @@ from src.data.data_utils import create_csv, cut_music, save_csv
 
 
 def make_pmemo_dataset(song_dir, annotaion_dir):
-    dir_ = '../data/interim/PMEmo'
+    """
+        Cut PMEmo dataset b
+
+        Args:
+            song_dir (str): Path to the directory containing the songs.
+            annotation_dir (str): Path to the directory containing the annotations.
+
+        Returns:
+            None
+        """
+    dir_ = 'data/interim'
     create_csv(dir_)
     df = pd.read_csv(annotaion_dir)
 
