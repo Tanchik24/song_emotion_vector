@@ -80,6 +80,7 @@
   //background-color: brown;
 }
 .coordinates-container {
+  width: 100%;
   height: 83%;
 }
 </style>

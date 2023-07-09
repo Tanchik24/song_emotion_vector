@@ -34,6 +34,7 @@ class Server:
             song_length = request.form['song_length']
             period = request.form['period']
             song = request.files['song']
+            print(type(song_length))
 
             emotion_representation = ContinuousEmotionRepresentation(song, song_length, period)
             return dataclasses.asdict(emotion_representation.get_static_prediction_result())
@@ -42,6 +43,8 @@ class Server:
         def get_gpt_description():
             arousal = request.get_json()['arousal']
             valence = request.get_json()['valence']
+            arousal = float(arousal)
+            valence = float(valence)
             return dataclasses.asdict(get_description(arousal, valence))
 
         @self.__app.route('/library', methods=['GET'])
@@ -54,4 +57,4 @@ class Server:
             return dataclasses.asdict(get_recommendation(ids))
 
     def run(self):
-        self.__app.run(host="0.0.0.0", port=8001, debug=True, use_reloader=False)
+        self.__app.run(host="0.0.0.0", port=8002, debug=True, use_reloader=False)

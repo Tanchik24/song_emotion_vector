@@ -23,8 +23,11 @@ class ContinuousEmotionRepresentation:
                    song_length (float, optional): The length of the song in seconds. Defaults to None.
                    period (int, optional): The period used for prediction. Defaults to 1.
                """
+        self.song = song
+        self.song_length = int(song_length)
+        self.period = int(period)
         self.__predictor = Predictor()
-        self.valence, self.arousal = self.__get_model_prediction(song, song_length=None, period=1)
+        self.valence, self.arousal = self.__get_model_prediction()
 
     def __get_mean(self):
         """
@@ -65,24 +68,19 @@ class ContinuousEmotionRepresentation:
         distance = [np.sqrt(v * v + a * a) for v, a in zip(self.valence, self.arousal)]
         return distance
 
-    def __get_model_prediction(self, song, song_length=None, period=1):
+    def __get_model_prediction(self):
         """
                 Obtains the valence and arousal predictions for the song using the predictor model.
-
-                Args:
-                    song (str or file-like object): Path to the song file or file-like object containing the song data.
-                    song_length (float, optional): Length of the song in seconds. Defaults to None.
-                    period (float, optional): Time period for prediction. Defaults to 1.
 
                 Returns:
                     tuple: A tuple containing the valence and arousal predictions for the song.
                 """
-        if isinstance(song, str):
-            with open(song, 'rb') as f:
+        if isinstance(self.song, str):
+            with open(self.song, 'rb') as f:
                 music = BytesIO(f.read())
         else:
-            music = BytesIO(song.stream.read())
-        valence, arousal = self.__predictor.predict(music, song_length, period)
+            music = BytesIO(self.song.stream.read())
+        valence, arousal = self.__predictor.predict(music, self.song_length, self.period)
         return valence, arousal
 
     def get_static_prediction_result(self):
