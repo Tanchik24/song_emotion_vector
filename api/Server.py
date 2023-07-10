@@ -57,4 +57,4 @@ class Server:
             return dataclasses.asdict(get_recommendation(ids))
 
     def run(self):
-        self.__app.run(host="0.0.0.0", port=8002, debug=True, use_reloader=False)
+        self.__app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)

@@ -5,10 +5,4 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8002:8002"
-#  frontend:
-#    build:
-#      context: demo
-#      dockerfile: demo/Dockerfile
-#    ports:
-#      - "8080:8080"
+      - "8080:8080"

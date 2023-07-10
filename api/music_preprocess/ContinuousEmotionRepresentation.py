@@ -19,7 +19,7 @@ class ContinuousEmotionRepresentation:
                Initializes a ContinuousEmotionRepresentation object.
 
                Args:
-                   song (str or file-like object): The path to the song file or a file-like object containing the song data.
+                   song (str or file-like objectdo): The path to the song file or a file-like object containing the song data.
                    song_length (float, optional): The length of the song in seconds. Defaults to None.
                    period (int, optional): The period used for prediction. Defaults to 1.
                """
