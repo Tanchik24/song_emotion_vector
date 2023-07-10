@@ -3,6 +3,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt --default-timeout=900
 
+EXPOSE 8005
+
 RUN apt-get update \
 && apt-get upgrade -y \
 && apt-get install -y \

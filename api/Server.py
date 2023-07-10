@@ -1,5 +1,5 @@
 import dataclasses
-
+import os
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 from api.webapi.repository import get_library
@@ -31,11 +31,10 @@ class Server:
 
         @self.__app.route('/predict', methods=['POST'])
         def get_prediction():
+            print(os.getcwd())
             song_length = int(request.form['song_length'])
             period = int(request.form['period'])
             song = request.files['song']
-            print(type(song_length))
-
             emotion_representation = ContinuousEmotionRepresentation(song, song_length, period)
             return dataclasses.asdict(emotion_representation.get_static_prediction_result())
 
@@ -57,4 +56,4 @@ class Server:
             return dataclasses.asdict(get_recommendation(ids))
 
     def run(self):
-        self.__app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False)
+        self.__app.run(host="0.0.0.0", port=8005, debug=True, use_reloader=False)

@@ -3,3 +3,7 @@ notebooks
 vk_audio_downloader
 README.md
 pipeline.py
+.idea
+.env
+api/public
+api/webapi/recomendation/rec_sys.csv
