@@ -1,3 +1,4 @@
+import os.path
 import shutil
 import subprocess
 from requests.exceptions import SSLError
@@ -25,6 +26,10 @@ def pipeline():
     except SSLError:
         print('The request limit has been exceeded, please try again in 30 minutes')
     shutil.move('chorus', 'data/raw')
+
+    if not os.path.exists('data/raw/annotation.csv'):
+        raise FileNotFoundError('The request limit has been exceeded, please try again in 30 minutes')
+        return
     print('Pmemo raw dataset has been loaded')
 
     # Create a dataset with 1-second annotation and truncate music to one-second length
