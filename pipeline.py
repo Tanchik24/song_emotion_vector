@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+from requests.exceptions import SSLError
 from src.data.data_utils import download_folder_from_google_drive, download_file_from_doodle_drive
 from src.data.make_pmemo_dataset import make_pmemo_dataset
 from src.features.make_train_dataset import DataPreprocessor, make_mfcc_dataset
@@ -9,12 +10,14 @@ from src.visualization.visualize import Visualizer
 
 
 def pipeline():
-    subprocess.call(['pip', 'install', '-r', './requirements.txt'])
     # Download raw data to the directory ./data/raw
     chorus_pmemo_url = 'https://drive.google.com/drive/folders/16uUDmtSzaWXfIZjIrnOGOw6DBd9d7jTO?usp=sharing'
     annotation_pmemo_url = 'https://drive.google.com/file/d/18NSlDIjoOCEp2JRsxMss9F1kbssj-hUL/view?usp=sharing'
-    download_folder_from_google_drive(chorus_pmemo_url)
-    download_file_from_doodle_drive(annotation_pmemo_url, 'data/raw/annotation.csv')
+    try:
+        download_folder_from_google_drive(chorus_pmemo_url)
+        download_file_from_doodle_drive(annotation_pmemo_url, 'data/raw/annotation.csv')
+    except SSLError:
+        print('The request limit has been exceeded, please try again in 30 minutes')
     shutil.move('chorus', 'data/raw')
     print('Pmemo raw dataset has been loaded')
 
