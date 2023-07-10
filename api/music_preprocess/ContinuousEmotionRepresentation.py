@@ -24,8 +24,8 @@ class ContinuousEmotionRepresentation:
                    period (int, optional): The period used for prediction. Defaults to 1.
                """
         self.song = song
-        self.song_length = int(song_length)
-        self.period = int(period)
+        self.song_length = song_length
+        self.period = period
         self.__predictor = Predictor()
         self.valence, self.arousal = self.__get_model_prediction()
 

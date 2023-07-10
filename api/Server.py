@@ -26,13 +26,13 @@ class Server:
         @self.__app.route('/predictValuesDemo', methods=['GET'])
         def get_values():
             filename = request.get_json()['filename']
-            emotion_representation = ContinuousEmotionRepresentation(filename)
+            emotion_representation = ContinuousEmotionRepresentation(song=filename)
             return dataclasses.asdict(emotion_representation.get_static_prediction_result())
 
         @self.__app.route('/predict', methods=['POST'])
         def get_prediction():
-            song_length = request.form['song_length']
-            period = request.form['period']
+            song_length = int(request.form['song_length'])
+            period = int(request.form['period'])
             song = request.files['song']
             print(type(song_length))
 
