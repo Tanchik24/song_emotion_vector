@@ -2,6 +2,7 @@ api/.DS_Store
 api/node_modules
 api/dist
 *.pt
+.env
 
 api/public
 
