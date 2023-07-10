@@ -22,9 +22,7 @@ api/*.ntvs*
 api/*.njsproj
 api/*.sln
 api/*.sw?
-*.csv
 venv
-songs_features.csv
-songs.csv
+api/webapi/recomendation/songs_features.csv
 __pycache__
 *.DS_Store
